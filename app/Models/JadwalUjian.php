@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class JadwalUjian extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'judul',
+        'mata_pelajaran_id',
+        'kelas',
+        'tanggal',
+        'durasi',
+        'token',
+        'status',
+    ];
+
+    public function mataPelajaran()
+    {
+        return $this->belongsTo(MataPelajaran::class);
+    }
+}
