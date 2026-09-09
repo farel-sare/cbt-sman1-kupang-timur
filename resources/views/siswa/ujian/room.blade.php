@@ -13,7 +13,7 @@
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col select-none">
 
     <!-- Topbar Ujian -->
-    <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
         <div>
             <h1 class="font-extrabold text-lg text-slate-800 uppercase tracking-wide">{{ $jadwal->mataPelajaran->nama ?? $jadwal->mataPelajaran->name ?? 'Ujian Online' }}</h1>
             <p class="text-xs text-slate-500 font-bold">Peserta: {{ auth()->user()->name }} ({{ auth()->user()->username }})</p>
@@ -120,18 +120,37 @@
 
     </main>
 
+    <!-- Modal Warning / Locked Anti-Cheat -->
+    <div id="anticheat-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-rose-100">
+            <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="anticheat-title" class="text-xl font-bold text-slate-800 mb-2">Peringatan Kecurangan!</h3>
+            <p id="anticheat-message" class="text-xs text-slate-600 font-medium leading-relaxed mb-6"></p>
+
+            <button id="anticheat-btn" type="button" onclick="closeAntiCheatModal()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold rounded-2xl text-xs shadow-lg shadow-rose-200 transition">
+                Saya Mengerti & Kembali Ujian
+            </button>
+        </div>
+    </div>
+
     <!-- Form Tersembunyi untuk Submit Akhir -->
     <form id="form-finish-ujian" action="{{ route('siswa.ujian.selesai', $jadwal->id) }}" method="POST" class="hidden">
         @csrf
     </form>
 
-    <!-- Script JavaScript Inti Ujian -->
+    <!-- Script JavaScript Inti Ujian & Anti-Cheat -->
     <script>
         const totalQuestions = {{ count($soals) }};
         const jadwalUjianId = {{ $jadwal->id }};
         const durasiUjianMenit = {{ $jadwal->durasi ?? 90 }};
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         let currentIndex = 0;
+
+        // Anti-Cheat Flags
+        let isExamLocked = false;
+        let isProcessingViolation = false;
 
         // Data Jawaban dari Database (Jika halaman di-refresh)
         const existingAnswers = @json($jawabanSiswa ?? []);
@@ -153,9 +172,94 @@
 
             updateUI();
             startTimer();
+            initAntiCheat();
         });
 
+        // -----------------------------------------------------------------
+        // Anti-Cheat Logic (Page Visibility & Window Blur Event Listener)
+        // -----------------------------------------------------------------
+        function initAntiCheat() {
+            // Deteksi ketika siswa pindah tab / minimize browser
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && !isExamLocked) {
+                    recordViolation();
+                }
+            });
+
+            // Deteksi ketika kursor keluar dari jendela browser
+            window.addEventListener('blur', function() {
+                if (!isExamLocked) {
+                    recordViolation();
+                }
+            });
+        }
+
+        function recordViolation() {
+            if (isExamLocked || isProcessingViolation) return;
+            isProcessingViolation = true;
+
+            fetch('{{ route("siswa.ujian.catat-pelanggaran") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    jadwal_id: jadwalUjianId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    showAntiCheatModal(data.message, data.is_locked);
+
+                    if (data.is_locked) {
+                        isExamLocked = true;
+                        localStorage.removeItem('exam_end_time_' + jadwalUjianId);
+                        setTimeout(() => {
+                            document.getElementById('form-finish-ujian').submit();
+                        }, 3000);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error recording violation:', error);
+            })
+            .finally(() => {
+                setTimeout(() => { isProcessingViolation = false; }, 1500);
+            });
+        }
+
+        function showAntiCheatModal(msg, isLocked) {
+            const modal = document.getElementById('anticheat-modal');
+            const title = document.getElementById('anticheat-title');
+            const message = document.getElementById('anticheat-message');
+            const btn = document.getElementById('anticheat-btn');
+
+            message.innerText = msg;
+            modal.classList.remove('hidden');
+
+            if (isLocked) {
+                title.innerText = 'Ujian Terkunci!';
+                btn.innerText = 'Mengumpulkan Jawaban...';
+                btn.onclick = null;
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                title.innerText = 'Peringatan Pelanggaran!';
+                btn.innerText = 'Saya Mengerti & Kembali Ujian';
+                btn.onclick = closeAntiCheatModal;
+            }
+        }
+
+        function closeAntiCheatModal() {
+            document.getElementById('anticheat-modal').classList.add('hidden');
+        }
+
+        // -----------------------------------------------------------------
         // Navigasi Soal
+        // -----------------------------------------------------------------
         function nextQuestion() {
             if (currentIndex < totalQuestions - 1) {
                 document.getElementById('soal-container-' + currentIndex).classList.add('hidden');

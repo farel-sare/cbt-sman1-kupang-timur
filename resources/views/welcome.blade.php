@@ -133,16 +133,12 @@
                 <!-- Right Column: Foto Sekolah -->
                 <div class="lg:col-span-5 relative">
                     <div class="relative mx-auto max-w-md lg:max-w-none">
-                        <!-- Glow Background Effect -->
                         <div class="absolute -inset-2 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-[2.5rem] blur-2xl opacity-25"></div>
 
-                        <!-- Frame Foto Sekolah -->
                         <div class="relative bg-white rounded-3xl p-3 shadow-2xl border border-slate-200/80">
                             <div class="overflow-hidden rounded-2xl relative group">
-                                <!-- Gantilah file foto sekolah Anda ke public/images/sekolah.jpg -->
                                 <img src="{{ asset('images/sekolah.jpeg') }}" alt="Gedung SMAN 1 Kupang Timur" class="w-full h-[360px] sm:h-[420px] object-cover group-hover:scale-105 transition-transform duration-500">
 
-                                <!-- Floating Overlay Info -->
                                 <div class="absolute bottom-4 left-4 right-4 bg-slate-900/80 backdrop-blur-md text-white p-4 rounded-2xl border border-white/10 shadow-lg">
                                     <div class="flex items-center space-x-3">
                                         <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-lg flex-none">

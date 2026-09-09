@@ -20,7 +20,7 @@
 </head>
 <body class="bg-[#F8FAFC] text-slate-800 flex h-screen overflow-hidden">
 
-    <!-- Sidebar Guru -->
+    <!-- Sidebar Guru (Biru-Putih) -->
     <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col hidden md:flex flex-none shadow-2xl z-20">
         <div class="h-20 flex items-center px-6 border-b border-slate-800 bg-slate-950/50">
             <div class="bg-white p-1.5 rounded-xl mr-3 shadow-sm flex-none">
@@ -28,23 +28,33 @@
             </div>
             <div class="overflow-hidden">
                 <h1 class="font-bold text-xs text-white leading-snug font-serif-custom uppercase truncate">SMAN 1 KUPANG TIMUR</h1>
-                <p class="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase mt-0.5">PANEL GURU</p>
+                <p class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase mt-0.5">PANEL GURU</p>
             </div>
         </div>
 
         <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1.5">
             <a href="{{ route('guru.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 rounded-xl text-slate-300 font-medium transition-all group">
-                <i class="fa-solid fa-house w-6 text-center text-slate-500 group-hover:text-emerald-400 mr-2"></i> Dashboard
+                <i class="fa-solid fa-house w-6 text-center text-slate-500 group-hover:text-blue-400 mr-2"></i> Dashboard
             </a>
 
             <div class="px-4 pt-6 pb-2 text-[11px] font-bold text-slate-500 uppercase tracking-widest">KELOLA EVALUASI</div>
 
-            <a href="{{ route('guru.bank-soal.index') }}" class="flex items-center px-4 py-3 bg-emerald-600 rounded-xl text-white font-semibold shadow-lg shadow-emerald-900/20 transition-all">
-                <i class="fa-solid fa-database w-6 text-center text-emerald-200 mr-2"></i> Bank Soal Saya
+            <a href="{{ route('guru.bank-soal.index') }}" class="flex items-center px-4 py-3 bg-blue-600 rounded-xl text-white font-semibold shadow-lg shadow-blue-900/30 transition-all">
+                <i class="fa-solid fa-database w-6 text-center text-blue-200 mr-2"></i> Bank Soal Saya
             </a>
 
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 rounded-xl text-slate-300 font-medium transition-all group">
-                <i class="fa-solid fa-calendar-alt w-6 text-center text-slate-500 group-hover:text-emerald-400 mr-2"></i> Jadwal Ujian
+            <a href="{{ route('guru.jadwal-ujian.index') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 rounded-xl text-slate-300 font-medium transition-all group">
+                <i class="fa-solid fa-calendar-alt w-6 text-center text-slate-500 group-hover:text-blue-400 mr-2"></i> Jadwal Ujian
+            </a>
+
+            <a href="{{ route('guru.monitoring.index') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 rounded-xl text-slate-300 font-medium transition-all group">
+                <i class="fa-solid fa-desktop w-6 text-center text-slate-500 group-hover:text-blue-400 mr-2"></i> Monitoring Realtime
+            </a>
+
+            <div class="px-4 pt-6 pb-2 text-[11px] font-bold text-slate-500 uppercase tracking-widest">LAPORAN & NILAI</div>
+
+            <a href="{{ route('guru.rekap-nilai.index') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 rounded-xl text-slate-300 font-medium transition-all group">
+                <i class="fa-solid fa-chart-line w-6 text-center text-slate-500 group-hover:text-blue-400 mr-2"></i> Rekap Nilai Siswa
             </a>
         </nav>
 
@@ -60,9 +70,9 @@
 
     <!-- Main Body -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-8 shadow-sm z-10 flex-none">
-            <div class="text-xs font-bold text-slate-600 bg-slate-100 px-4 py-2 rounded-full">
-                <i class="fa-solid fa-book-bookmark text-emerald-600 mr-2"></i> Mapel: {{ $mapelGuru->nama ?? $mapelGuru->name ?? 'Belum Diatur' }}
+        <header class="h-20 bg-white border-b border-slate-200/80 flex items-center justify-between px-8 shadow-sm z-10 flex-none">
+            <div class="text-xs font-bold text-blue-700 bg-blue-50 px-4 py-2 rounded-full flex items-center border border-blue-100">
+                <i class="fa-solid fa-book-bookmark text-blue-600 mr-2"></i> Mapel: {{ $mapelGuru->nama ?? $mapelGuru->name ?? 'Belum Diatur' }}
             </div>
             <div class="flex items-center space-x-3">
                 <span class="text-sm font-bold text-slate-800">{{ auth()->user()->name }}</span>
@@ -77,14 +87,14 @@
                         <h2 class="text-2xl font-bold text-slate-800 font-serif-custom">Bank Soal Saya</h2>
                         <p class="text-sm text-slate-500 mt-0.5">Kelola koleksi butir soal pilihan ganda untuk ujian Anda.</p>
                     </div>
-                    <button @click="showModalTambah = true" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-200 transition flex items-center">
+                    <button @click="showModalTambah = true" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-200 transition flex items-center">
                         <i class="fa-solid fa-plus mr-2"></i> Buat Soal Baru
                     </button>
                 </div>
 
                 @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-2xl text-sm font-semibold flex items-center">
-                    <i class="fa-solid fa-check mr-3 text-emerald-600"></i> {{ session('success') }}
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 px-5 py-4 rounded-2xl text-sm font-semibold flex items-center">
+                    <i class="fa-solid fa-check mr-3 text-blue-600"></i> {{ session('success') }}
                 </div>
                 @endif
 
@@ -99,14 +109,14 @@
                 @endif
 
                 <!-- Bar Pencarian -->
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm flex items-center justify-between">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
                     <form method="GET" action="{{ route('guru.bank-soal.index') }}" class="w-full sm:w-80">
-                        <input type="text" name="search" value="{{ $search }}" placeholder="Cari pertanyaan soal..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none">
+                        <input type="text" name="search" value="{{ $search }}" placeholder="Cari pertanyaan soal..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-blue-500">
                     </form>
                 </div>
 
                 <!-- Tabel Soal -->
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider font-bold border-b border-slate-200/80">
@@ -127,13 +137,13 @@
                                         {{ $soal->pertanyaan }}
                                     </td>
                                     <td class="p-5 text-center">
-                                        <span class="inline-block w-8 h-8 leading-8 bg-emerald-100 text-emerald-800 font-extrabold rounded-lg border border-emerald-200">
+                                        <span class="inline-block w-8 h-8 leading-8 bg-blue-100 text-blue-800 font-extrabold rounded-lg border border-blue-200">
                                             {{ $soal->kunci_jawaban }}
                                         </span>
                                     </td>
                                     <td class="p-5 text-right pr-6">
                                         <div class="flex justify-end space-x-2">
-                                            <button onclick="openEditModal({{ json_encode($soal) }})" class="p-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white rounded-lg transition" title="Edit Soal">
+                                            <button onclick="openEditModal({{ json_encode($soal) }})" class="p-2 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg transition" title="Edit Soal">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
                                             <form action="{{ route('guru.bank-soal.destroy', $soal->id) }}" method="POST" onsubmit="return confirm('Hapus soal ini?')">
@@ -179,36 +189,36 @@
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pertanyaan Soal</label>
-                    <textarea name="pertanyaan" rows="3" required placeholder="Tuliskan isi pertanyaan..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none"></textarea>
+                    <textarea name="pertanyaan" rows="3" required placeholder="Tuliskan isi pertanyaan..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-blue-500"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi A</label>
-                        <input type="text" name="opsi_a" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" name="opsi_a" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi B</label>
-                        <input type="text" name="opsi_b" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" name="opsi_b" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi C</label>
-                        <input type="text" name="opsi_c" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" name="opsi_c" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi D</label>
-                        <input type="text" name="opsi_d" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" name="opsi_d" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi E (Opsional)</label>
-                        <input type="text" name="opsi_e" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" name="opsi_e" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kunci Jawaban</label>
-                        <select name="kunci_jawaban" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none">
+                        <select name="kunci_jawaban" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
                             <option value="A">Opsi A</option>
                             <option value="B">Opsi B</option>
                             <option value="C">Opsi C</option>
@@ -220,7 +230,7 @@
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
                     <button type="button" @click="showModalTambah = false" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-xs">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md">Simpan Soal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md">Simpan Soal</button>
                 </div>
             </form>
         </div>
@@ -239,36 +249,36 @@
                 @method('PUT')
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pertanyaan Soal</label>
-                    <textarea id="edit_pertanyaan" name="pertanyaan" rows="3" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none"></textarea>
+                    <textarea id="edit_pertanyaan" name="pertanyaan" rows="3" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-blue-500"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi A</label>
-                        <input type="text" id="edit_opsi_a" name="opsi_a" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" id="edit_opsi_a" name="opsi_a" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi B</label>
-                        <input type="text" id="edit_opsi_b" name="opsi_b" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" id="edit_opsi_b" name="opsi_b" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi C</label>
-                        <input type="text" id="edit_opsi_c" name="opsi_c" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" id="edit_opsi_c" name="opsi_c" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi D</label>
-                        <input type="text" id="edit_opsi_d" name="opsi_d" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" id="edit_opsi_d" name="opsi_d" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Opsi E (Opsional)</label>
-                        <input type="text" id="edit_opsi_e" name="opsi_e" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <input type="text" id="edit_opsi_e" name="opsi_e" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kunci Jawaban</label>
-                        <select id="edit_kunci_jawaban" name="kunci_jawaban" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none">
+                        <select id="edit_kunci_jawaban" name="kunci_jawaban" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
                             <option value="A">Opsi A</option>
                             <option value="B">Opsi B</option>
                             <option value="C">Opsi C</option>
@@ -280,7 +290,7 @@
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
                     <button type="button" onclick="document.getElementById('modalEditSoal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-xs">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md">Simpan Perubahan</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

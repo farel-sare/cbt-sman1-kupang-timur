@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\RekapNilaiController;
 use App\Http\Controllers\Admin\MonitoringUjianController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\BankSoalController as GuruBankSoalController;
+use App\Http\Controllers\Guru\JadwalUjianController as GuruJadwalUjianController;
+use App\Http\Controllers\Guru\MonitoringController as GuruMonitoringController;
+use App\Http\Controllers\Guru\RekapNilaiController as GuruRekapNilaiController;
 use App\Http\Controllers\Siswa\UjianController;
 use App\Models\JadwalUjian;
 
@@ -92,10 +95,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Monitoring Ujian Siswa Realtime & Reset Status
     Route::get('/admin/monitoring-ujian', [MonitoringUjianController::class, 'index'])->name('admin.monitoring-ujian.index');
-    Route::get('/admin/monitoring-data', [MonitoringUjianController::class, 'getData'])->name('admin.monitoring.data');
-    Route::post('/admin/user/reset-session/{userId}', [MonitoringUjianController::class, 'resetSession'])->name('admin.user.reset-session');
-    Route::post('/admin/monitoring/force-finish/{pesertaId}', [MonitoringUjianController::class, 'forceFinish'])->name('admin.monitoring.force-finish');
-    Route::post('/admin/monitoring/tambah-waktu/{pesertaId}', [MonitoringUjianController::class, 'tambahWaktu'])->name('admin.monitoring.tambah-waktu');
+    Route::get('/admin/monitoring-ujian/get-data', [MonitoringUjianController::class, 'getData'])->name('admin.monitoring-ujian.get-data');
+    Route::post('/admin/monitoring-ujian/reset-session/{userId}', [MonitoringUjianController::class, 'resetSession'])->name('admin.monitoring-ujian.reset-session');
+    Route::post('/admin/monitoring-ujian/force-finish/{pesertaId}', [MonitoringUjianController::class, 'forceFinish'])->name('admin.monitoring-ujian.force-finish');
+    Route::post('/admin/monitoring-ujian/tambah-waktu/{pesertaId}', [MonitoringUjianController::class, 'tambahWaktu'])->name('admin.monitoring-ujian.tambah-waktu');
 
     // Rekap Nilai Admin
     Route::get('/admin/rekap-nilai', [RekapNilaiController::class, 'index'])->name('admin.rekap-nilai.index');
@@ -116,6 +119,20 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::post('/guru/bank-soal', [GuruBankSoalController::class, 'store'])->name('guru.bank-soal.store');
     Route::put('/guru/bank-soal/{soal}', [GuruBankSoalController::class, 'update'])->name('guru.bank-soal.update');
     Route::delete('/guru/bank-soal/{soal}', [GuruBankSoalController::class, 'destroy'])->name('guru.bank-soal.destroy');
+
+    // Jadwal Ujian Guru
+    Route::get('/guru/jadwal-ujian', [GuruJadwalUjianController::class, 'index'])->name('guru.jadwal-ujian.index');
+    Route::post('/guru/jadwal-ujian', [GuruJadwalUjianController::class, 'store'])->name('guru.jadwal-ujian.store');
+    Route::put('/guru/jadwal-ujian/{id}', [GuruJadwalUjianController::class, 'update'])->name('guru.jadwal-ujian.update');
+    Route::delete('/guru/jadwal-ujian/{id}', [GuruJadwalUjianController::class, 'destroy'])->name('guru.jadwal-ujian.destroy');
+    Route::post('/guru/jadwal-ujian/{id}/token', [GuruJadwalUjianController::class, 'generateToken'])->name('guru.jadwal-ujian.generate-token');
+    Route::post('/guru/jadwal-ujian/{id}/toggle-status', [GuruJadwalUjianController::class, 'toggleStatus'])->name('guru.jadwal-ujian.toggle-status');
+
+    // Monitoring Realtime Guru
+    Route::get('/guru/monitoring', [GuruMonitoringController::class, 'index'])->name('guru.monitoring.index');
+
+    // Rekap Nilai Guru
+    Route::get('/guru/rekap-nilai', [GuruRekapNilaiController::class, 'index'])->name('guru.rekap-nilai.index');
 });
 
 // ==========================================
@@ -134,8 +151,9 @@ Route::middleware(['auth', 'role:siswa'])->group(function () {
     Route::post('/siswa/ujian/{jadwal}/verify', [UjianController::class, 'verifyToken'])->name('siswa.ujian.verify');
     Route::get('/siswa/ujian/{jadwal}/room', [UjianController::class, 'room'])->name('siswa.ujian.room');
 
-    // Auto-Save, Selesai, dan Hasil Ujian
+    // Auto-Save, Anti-Cheat, Selesai, dan Hasil Ujian
     Route::post('/siswa/ujian/simpan-jawaban', [UjianController::class, 'simpanJawaban'])->name('siswa.ujian.simpan-jawaban');
+    Route::post('/siswa/ujian/catat-pelanggaran', [UjianController::class, 'catatPelanggaran'])->name('siswa.ujian.catat-pelanggaran');
     Route::post('/siswa/ujian/{jadwal}/selesai', [UjianController::class, 'selesaiUjian'])->name('siswa.ujian.selesai');
     Route::get('/siswa/ujian/{jadwal}/hasil', [UjianController::class, 'hasilUjian'])->name('siswa.ujian.hasil');
 });
